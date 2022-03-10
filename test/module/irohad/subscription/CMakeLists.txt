@@ -6,4 +6,5 @@
 addtest(subscription_test subscription_test.cpp)
 target_link_libraries(subscription_test
     async_subscription
+    shared_model_cryptography_model
     )

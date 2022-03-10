@@ -82,6 +82,35 @@ struct StatusTrackTest {
   StatusTrackTest &operator=(StatusTrackTest &&) = default;
 };
 
+#include "crypto/bloom.hpp"
+TEST_F(SubscriptionTest, RepeatCopyControl111) {
+  using namespace shared_model::crypto;
+  using BF = BloomFilter<Hash,
+                         256,
+                         Iroha2BloomHasher64<0, 32>,
+                         Iroha2BloomHasher64<1, 32>,
+                         Iroha2BloomHasher64<2, 32>,
+                         Iroha2BloomHasher64<3, 32>>;
+
+  BF filter;
+  filter.set(Hash::fromHexString("1111111111111111111111111111111111111111111111111111111111111111"));
+  filter.set(Hash::fromHexString("9123594865892659791270573928567890379843798672987395677893427597"));
+  filter.set(Hash::fromHexString("1298367587946526947123063707196892848236917480679537296387464598"));
+  filter.set(Hash::fromHexString("0000000000000001000000000000000000000000000000000000000000000000"));
+  filter.set(Hash::fromHexString("3897425687243695369327492877329067903476059372073409674908137884"));
+  filter.set(Hash::fromHexString("2934756983467951879084309649306870136709760987508225675248658387"));
+  filter.set(Hash::fromHexString("0912570146507610507436597430971934675798697834672098347567983268"));
+
+  [[maybe_unused]] auto r1 = filter.test(Hash::fromHexString("0000000000000001000000000000000000000000000000000000000000000000"));
+  [[maybe_unused]] auto r2 = filter.test(Hash::fromHexString("0000000000000002000000000000000000000000000000000000000000000000"));
+  [[maybe_unused]] auto r3 = filter.test(Hash::fromHexString("1798651657896419583498564329675934657623489695369629367598636784"));
+  [[maybe_unused]] auto r4 = filter.test(Hash::fromHexString("1827368423659234659674987632986873468128438965987673267465754658"));
+  [[maybe_unused]] auto r5 = filter.test(Hash::fromHexString("5364659873684682769846912875687687438127634956919694356193847659"));
+  [[maybe_unused]] auto r6 = filter.test(Hash::fromHexString("1298367587946526947123063707196892848236917480679537296387464598"));
+  int p = 0;
+  ++p;
+}
+
 /**
  * @given subscription engine
  * @when put task that must repeat N times
