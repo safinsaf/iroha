@@ -37,7 +37,7 @@ jobs:
 
     runs-on: ubuntu-20.04 #ubuntu-latest
     name: Pull requests from forks should use other workflow
-    if: github.event.issue.comment.body == 'Launch build'
+    #if: github.event.issue.comment.body == 'Launch build'
     steps:
 
       -
