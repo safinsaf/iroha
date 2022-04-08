@@ -18,8 +18,8 @@ permissions:
 on:
   #pull_request_target:
   #  branches: [ main, support/1.*, edge, develop, feature/DOPS-1651/enable-fork-build ] ## target branches
-  issue_comment:
-    types: [created]
+  pull_request_review:
+    types: [submitted]
     branches: [support/1.*, edge, develop, feature/DOPS-1651/enable-fork-build]
 env:
   DOCKERHUB_ORG: hyperledger
@@ -29,7 +29,7 @@ jobs:
   check_if_pull_request_comes_from_fork:
     runs-on: ubuntu-20.04 #ubuntu-latest
     name: Pull requests from forks should use other workflow
-    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, 'Launch build')
+    if: github.event.review.state == 'approved'
     steps:
       - name: Show context
         run: |
