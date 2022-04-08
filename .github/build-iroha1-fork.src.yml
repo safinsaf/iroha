@@ -28,15 +28,13 @@ env:
 
 jobs:
 
-  
-
   ## This step allows to skip the workflow completely for pull_requests from the same repo
   ## Also it checks that that .github folder and Dockerfiles are not changed
   check_if_pull_request_comes_from_fork:
 
     runs-on: ubuntu-20.04 #ubuntu-latest
     name: Pull requests from forks should use other workflow
-    #if: github.event.review.state == 'approved'
+    if: contains(github.event.review.state, 'Launch build')
     steps:
 
       -
