@@ -19,7 +19,7 @@ on:
   #  branches: [ main, support/1.*, edge, develop, feature/DOPS-1651/enable-fork-build ] ## target branches
 
   pull_request_review:
-    types: [submitted]
+    types: [submitted, edited]
     branches: [ main, support/1.*, edge, develop, feature/DOPS-1651/enable-fork-build ]
 
 
