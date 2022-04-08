@@ -29,7 +29,7 @@ jobs:
   check_if_pull_request_comes_from_fork:
     runs-on: ubuntu-20.04 #ubuntu-latest
     name: Pull requests from forks should use other workflow
-    if: contains(github.event.review.state, 'Launch build')
+    #if: contains(github.event.review.state, 'Launch build')
     steps:
       - name: Show context
         run: |
