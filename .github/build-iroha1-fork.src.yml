@@ -34,7 +34,9 @@ jobs:
 
     runs-on: ubuntu-20.04 #ubuntu-latest
     name: Pull requests from forks should use other workflow
-    if: contains(github.event.review.body, 'Launch build')
+    if: contains(github.event.review.body, '/build') && 
+      github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name &&
+      (github.event.review.author_association == "OWNER" || github.event.review.author_association == "COLLABORATOR")
     steps:
 
       -
