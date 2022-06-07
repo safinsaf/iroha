@@ -6,6 +6,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  IROHA2_BUILDER: 7272721/i2-ci
+  IROHA2_BUILDER_TAG: latest
 
 # Note jobs in this workflow are run on `push` meaning that there's
 # no point in burning our AWS self-hosted runners' time. Hence
@@ -14,7 +16,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: 7272721/i2-ci:latest
+      image: {{ env.IROHA2_BUILDER }}:{{ env.IROHA_BUILDER_TAG }}
     steps:
       - uses: actions/checkout@v2
       - uses: Swatinem/rust-cache@v1
@@ -73,7 +75,7 @@ jobs:
   build-ci-image:
     runs-on: ubuntu-latest
     container:
-      image: 7272721/i2-ci:latest
+      image: {{ env.IROHA2_BUILDER }}:{{ env.IROHA_BUILDER_TAG }}
     steps:
       - uses: actions/checkout@v2
       - uses: Swatinem/rust-cache@v1
@@ -92,7 +94,7 @@ jobs:
   archive-and-publish-schema:
     runs-on: ubuntu-latest
     container:
-      image: 7272721/i2-ci:latest
+      image: {{ env.IROHA2_BUILDER }}:{{ env.IROHA_BUILDER_TAG }}
     steps:
       - uses: actions/checkout@v2
       - uses: Swatinem/rust-cache@v1
@@ -126,7 +128,7 @@ jobs:
   print-telemetry:
     runs-on: ubuntu-latest
     container:
-      image: 7272721/i2-ci:latest
+      image: {{ env.IROHA2_BUILDER }}:{{ env.IROHA_BUILDER_TAG }}
     steps:
       - uses: actions/checkout@v2
       - uses: Swatinem/rust-cache@v1
@@ -180,7 +182,7 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     container:
-      image: 7272721/i2-ci:latest
+      image: {{ env.IROHA2_BUILDER }}:{{ env.IROHA_BUILDER_TAG }}
     steps:
       # TODO Remove these steps #2165
       - uses: actions-rs/toolchain@v1
