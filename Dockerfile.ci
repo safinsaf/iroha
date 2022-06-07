@@ -1,50 +1,19 @@
-FROM alpine:3.16
-ENV RUST_VERSION=1.60.0 \
-    RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:$PATH
+FROM archlinux:latest
 
 RUN set -eux && \
-    apk update && \
-    apk add \
-       ca-certificates \
-        gcc \
-        curl \
-        clang \
-        git \
-        cmake \
-        make \
-        pkgconfig  \
-        libressl-dev=2.5.5-r2 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.6/main \
-        libstdc++ \
-        zlib \
-        zlib-dev \
-        g++ \
-        linux-headers \
-        docker docker-compose \
-        mold=1.2.1-r0 --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \ 
-        libgcc && \
-    apkArch="$(apk --print-arch)" && \
-    case "${apkArch##*-}" in \
-        x86_64) rustArch='x86_64-unknown-linux-musl'; rustupSha256='bdf022eb7cba403d0285bb62cbc47211f610caec24589a72af70e1e900663be9' ;; \
-        armhf) rustArch='armv7-unknown-linux-gnueabihf'; rustupSha256='67777ac3bc17277102f2ed73fd5f14c51f4ca5963adadf7f174adf4ebc38747b' ;; \
-        arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='32a1532f7cef072a667bac53f1a5542c99666c4071af0c9549795bbdb2069ec1' ;; \
-        i386) rustArch='i686-unknown-linux-gnu'; rustupSha256='e50d1deb99048bc5782a0200aa33e4eea70747d49dffdc9d06812fd22a372515' ;; \
-        *) echo >&2 "unsupported architecture: ${dpkgArch}"; exit 1 ;; \
-    esac && \
-    url="https://static.rust-lang.org/rustup/archive/1.24.3/${rustArch}/rustup-init" && \
-    wget "$url" && \
-    echo "${rustupSha256} *rustup-init" | sha256sum -c - && \
-    chmod +x rustup-init && \
-    ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch} && \
-    rm rustup-init && \
-    source /usr/local/cargo/env
+    pacman -Syu rustup base-devel mold rust-musl --noconfirm
+RUN rustup set profile minimal && \
+    rustup toolchain add stable
 
-RUN rustup component add llvm-tools-preview clippy && \
-    rustup install --profile default nightly-2022-04-20 && \
-    rustup target add --toolchain nightly-2022-04-20 x86_64-unknown-linux-musl && \
-    rustup component add rust-src && \
-    rustup component add rust-src --toolchain nightly-2022-04-20-x86_64-unknown-linux-musl && \
-    rustup target add wasm32-unknown-unknown && \
-    rustup target add wasm32-unknown-unknown --toolchain nightly-2022-04-20 && \
-    cargo install cargo-lints cargo-nono webassembly-test-runner
+RUN rustup component add llvm-tools-preview clippy
+RUN rustup install --profile default nightly-2022-04-20
+RUN rustup toolchain add nightly-2022-04-20-x86_64-unknown-linux-musl
+RUN rustup component add rust-src
+RUN rustup component add rust-src --toolchain nightly-2022-04-20-x86_64-unknown-linux-musl
+RUN rustup component add rustfmt --toolchain nightly-2022-04-20-x86_64-unknown-linux-musl
+RUN rustup component add rust-std
+RUN rustup target add x86_64-unknown-linux-musl
+RUN rustup target add wasm32-unknown-unknown
+RUN rustup target add wasm32-unknown-unknown --toolchain nightly-2022-04-20
+RUN cargo install cargo-lints cargo-nono webassembly-test-runner
+RUN rustup target add x86_64-unknown-linux-musl
